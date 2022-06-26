@@ -9,4 +9,4 @@ Uses of keylogger:
 - Self analysis.
 
 ## Screenshots
-![App Screenshot](https://i.ibb.co/TTpVg6p/image.png)
+![App Screenshot](https://i.ibb.co/TTpVg6p/image.png =250x)
