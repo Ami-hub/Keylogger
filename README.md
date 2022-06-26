@@ -1,5 +1,8 @@
 # Keylogger
-A basic keyLogger supports windows only (using winAPI).
+A basic key logger supports windows only (using winAPI).
+
+## Essence
+[What is a keylogger?](https://en.wikipedia.org/wiki/Keystroke_logging "what is")
 
 ## Uses
 Uses of keylogger:
