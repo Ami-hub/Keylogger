@@ -24,5 +24,5 @@ This project adheres to a set of ethical principles:
 <img src="https://github.com/Ami-hub/Keylogger/assets/57874729/c979cfaf-3779-40cd-8540-f0e3d475a0eb" alt="App Screenshot" width="80%" />
 
 ## License 📜
-Feel free to use, modify, and distribute my Key Logger project without any restrictions. For more information, visit the [Unlicence documentation](https://unlicense.org/).  
+Feel free to use, modify, and distribute my Key Logger project without any restrictions. For more information, see [Unlicence](https://github.com/Ami-hub/Keylogger/blob/master/LICENSE).  
 Embrace the spirit of freedom and collaboration! 🌐🔓
