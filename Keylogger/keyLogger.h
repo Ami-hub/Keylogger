@@ -5,6 +5,12 @@
 
 #pragma once
 
+ /**
+  * @brief Error code indicating a failure to set the keyboard hook.  
+  *
+  * Possible reasons for this error include a failure to allocate resources, insufficient privileges,
+  * or compatibility issues with the operating system.  
+  */
 #define SET_HOOK_ERROR -1
 
  /**
