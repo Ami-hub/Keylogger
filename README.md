@@ -18,8 +18,9 @@ This project adheres to a set of ethical principles:
 
 ### Prerequisites 📚
 
+- Windows 10 or later
 - [Git](https://git-scm.com/downloads)
-- [Visual Studio](https://visualstudio.microsoft.com/downloads/)
+- [Build Tools for Visual Studio](https://visualstudio.microsoft.com/visual-cpp-build-tools/) (MSVC + Windows SDK + NMake)
 
 Clone this repository
 
@@ -27,29 +28,24 @@ Clone this repository
 git clone https://github.com/Ami-hub/Keylogger.git
 ```
 
-Navigate to the `Keylogger` directory
+Go to the `Keylogger` directory
 
 ```
 cd Keylogger
 ```
 
-Open the `Keylogger.sln` file in Visual Studio
-
+Build and run the project 
 ```
-.\Keylogger.sln
-```
+nmake run
+``` 
 
-Click on the green play button to build and run the project:
-<p align="center">
-  <img width="75%" alt="image" src="https://github.com/Ami-hub/Keylogger/assets/57874729/859e30da-fadf-4796-a63b-5c58f909eddb">
-</p>
+**Important:** Use `nmake` on Windows (comes with Visual Studio). Do **not** use `make` (Unix-like), as it conflicts with the MSVC compiler flags.
 
-That's it! 🎉
 
 ## Usage 📝
 
 After running the project, the key logger will begin recording keystrokes.  
-By default, the key logger saves the recorded keystrokes `loggedKeys.txt` file in the `Keylogger` directory.
+By default, the key logger saves the recorded keystrokes `output.keys.txt` file in the `Keylogger` directory.
 
 ## Screenshots 📸
 <p align="center">
